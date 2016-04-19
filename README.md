@@ -1,39 +1,17 @@
 Redux Thunk
 =============
 
-Thunk [middleware](http://redux.js.org/docs/advanced/Middleware.html) for Redux.
+[FSA](https://github.com/acdlite/flux-standard-action)-compliant Thunk [middleware](http://redux.js.org/docs/advanced/Middleware.html) for Redux.
 
-[![build status](https://img.shields.io/travis/gaearon/redux-thunk/master.svg?style=flat-square)](https://travis-ci.org/gaearon/redux-thunk) 
-[![npm version](https://img.shields.io/npm/v/redux-thunk.svg?style=flat-square)](https://www.npmjs.com/package/redux-thunk)
-[![npm downloads](https://img.shields.io/npm/dm/redux-thunk.svg?style=flat-square)](https://www.npmjs.com/package/redux-thunk)
+[![build status](https://img.shields.io/travis/bartvanandel/redux-thunk/master.svg?style=flat-square)](https://travis-ci.org/bartvanandel/redux-thunk) 
+[![npm version](https://img.shields.io/npm/v/redux-thunk-fsa.svg?style=flat-square)](https://www.npmjs.com/package/redux-thunk-fsa)
+[![npm downloads](https://img.shields.io/npm/dm/redux-thunk-fsa.svg?style=flat-square)](https://www.npmjs.com/package/redux-thunk-fsa)
 
-```js
-npm install --save redux-thunk
-```
-
-## Note on 2.x Update
-
-Most tutorials today assume Redux Thunk 1.x so you might run into an issue when running their code with 2.x.  
-**If you use Redux Thunk 2.x in CommonJS environment, [don’t forget to add `.default` to your import](https://github.com/gaearon/redux-thunk/releases/tag/v2.0.0):**
-
-```diff
-- var ReduxThunk = require('redux-thunk')
-+ var ReduxThunk = require('redux-thunk').default
-```
-
-If you used ES modules, you’re already all good:
+Initially started as a [pull request](https://github.com/gaearon/redux-thunk/pull/68), this is a fully backwards compatible version of [redux-thunk](https://github.com/gaearon/redux-thunk) 2.x. As such, can be used as a stand-in replacement which enables support for FSA, much like [redux-promise](https://github.com/acdlite/redux-promise) is implemented.
 
 ```js
-import ReduxThunk from 'redux-thunk' // no changes here 😀
+npm install --save redux-thunk-fsa
 ```
-
-Additionally, since 2.x, we also support a [UMD build](https://npmcdn.com/redux-thunk@2.0.1/dist/redux-thunk.min.js):
-
-```js
-var ReduxThunk = window.ReduxThunk.default
-```
-
-As you can see, it also requires `.default` at the end.
 
 ## Why Do I Need This?
 
@@ -45,23 +23,29 @@ If you’re not sure whether you need it, you probably don’t.
 
 Redux Thunk [middleware](https://github.com/reactjs/redux/blob/master/docs/advanced/Middleware.md) allows you to write action creators that return a function instead of an action. The thunk can be used to delay the dispatch of an action, or to dispatch only if a certain condition is met. The inner function receives the store methods `dispatch` and `getState` as parameters.
 
+Additionally, Redux Thunk FSA allows you to write your thunk action creators FSA-style, for instance using [redux-actions](https://github.com/acdlite/redux-actions).
+
 An action creator that returns a function to perform asynchronous dispatch:
 
 ```js
 const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
+const INCREMENT_COUNTER_DELAYED = 'INCREMENT_COUNTER_DELAYED';
 
-function increment() {
-  return {
-    type: INCREMENT_COUNTER
-  };
-}
+let increment = createAction(INCREMENT_COUNTER);
 
-function incrementAsync() {
-  return dispatch => {
+// Note: this is equivalent to:
+//let increment = createAction(
+//  INCREMENT_COUNTER,
+//  (arg) => (arg)
+//);
+  
+let incrementAsync = createAction(
+  INCREMENT_COUNTER,
+  timeout => dispatch => {
     setTimeout(() => {
       // Yay! Can invoke sync or async actions with `dispatch`
       dispatch(increment());
-    }, 1000);
+    }, timeout);
   };
 }
 ```
@@ -101,14 +85,14 @@ let foo = () => 1 + 2;
 ## Installation
 
 ```
-npm install --save redux-thunk
+npm install --save redux-thunk-fsa
 ```
 
-Then, to enable Redux Thunk, use [`applyMiddleware()`](http://redux.js.org/docs/api/applyMiddleware.html):
+Then, to enable Redux Thunk FSA, use [`applyMiddleware()`](http://redux.js.org/docs/api/applyMiddleware.html):
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import thunk from 'redux-thunk-fsa';
 import rootReducer from './reducers/index';
 
 // Note: this API requires redux@>=3.1.0
@@ -124,7 +108,7 @@ Any return value from the inner function will be available as the return value o
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import thunk from 'redux-thunk-fsa';
 import rootReducer from './reducers';
 
 // Note: this API requires redux@>=3.1.0
