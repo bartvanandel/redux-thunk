@@ -4,7 +4,7 @@ import thunkMiddleware from '../src/index';
 describe('thunk middleware', () => {
   const doDispatch = () => {};
   const doGetState = () => {};
-  const nextHandler = thunkMiddleware({dispatch: doDispatch, getState: doGetState});
+  const nextHandler = thunkMiddleware({ dispatch: doDispatch, getState: doGetState });
 
   it('must return a function to handle next', () => {
     chai.assert.isFunction(nextHandler);
@@ -30,7 +30,7 @@ describe('thunk middleware', () => {
         });
       });
 
-      it('must run the given action function within Flux Standard Action payload', done => {
+      it('must run the given FSA function payload with dispatch and getState', done => {
         const actionHandler = nextHandler();
 
         actionHandler({
@@ -43,7 +43,7 @@ describe('thunk middleware', () => {
         });
       });
 
-      it('must pass action to next if neither a function nor a Flux Standard Action', done => {
+      it('must pass action to next if neither a function nor FSA with function payload', done => {
         const actionObj = {};
 
         const actionHandler = nextHandler(action => {

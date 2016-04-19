@@ -7,6 +7,12 @@
   "globals": {
     "expect": true
   },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
   "rules": {
     "padded-blocks": 0,
     "no-use-before-define": [2, "nofunc"],
